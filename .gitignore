@@ -1,0 +1,11 @@
+*.pdf
+*.jpg
+*.jpeg
+*.gif
+*.png
+*.swp
+*.log
+
+# Ignore thumbnails created by Windows
+Thumbs.db
+api/*
