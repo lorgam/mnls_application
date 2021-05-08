@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  api:
+    image: php:7-apache
+    volumes:
+      - ./api/:/var/www/html:ro
+    ports:
+      - 8888:80
