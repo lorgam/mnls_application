@@ -13,21 +13,22 @@ class Controller
 
     switch ($method) {
       case 'start':
-        if (!isset($_POST['n']) || !is_numeric($_POST['n']) || !isset($_POST['m']) || !is_numeric($_POST['m'])) return $this->errorMsg('Incorrect values for n and/or m');
+        if (!isset($_POST['n']) || !is_numeric($_POST['n'])) return $this->errorMsg('Incorrect value for n');
+        if (!isset($_POST['m']) || !is_numeric($_POST['m'])) return $this->errorMsg('Incorrect value for m');
         $n = intval($_POST['n']);
         $m = intval($_POST['m']);
-        if ($n <= 0 || $m <= 0) return $this->errorMsg('The values for n and m must be greater than 0');
+        if ($n <= 0) return $this->errorMsg('The values for n must be greater than 0');
+        if ($m <= 0) return $this->errorMsg('The values for m must be greater than 0');
 
         $res['n'] = $n;
-        $res['m'] = $m;
 
         $analyzer = new Analyzer();
-        $items = $analyzer->getFrequency([
+        $word = $analyzer->getFrequency([
           'n' => $n,
           'm' => $m,
         ]);
 
-        $res['items'] = $items;
+        $res['word'] = $word;
         break;
 
       default :

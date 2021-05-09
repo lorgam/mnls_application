@@ -4,33 +4,36 @@ class Analyzer
 {
   private const API_LOCATION = 'http://api/';
 
+  private $documents;
+  private $queue;
+
   /**
    * Gets the most used words in a combination of documents
    */
-  public function getFrequency(array $params) : array
+  public function getFrequency(array $params) : string
   {
-    $n         = $params['n'];
-    $m         = $params['m'];
-    $documents = json_decode( file_get_contents(self::API_LOCATION) );
-    $queue     = [];
-    $maxWords  = [];
+    $n               = $params['n'];
+    $this->documents = $this->getDocuments();
+    $this->queue     = [];
 
     for ($i = 0; $i < $n; ++$i) { // Read the first items to fill the queue that we are going to use to calculate the most used word in the documents
-      $document = $documents[$i];
-
-      $queue[] = $this->parseText($document->textVersion);
+      $document = array_shift($this->documents);
+      $this->queue[] = $this->parseText($document->textVersion);
     }
 
-    for ($i = $n; $i < $m + $n; ++$i) {
-      $word = $this->getMaxWordInQueue($queue);
-      $maxWords[] = $word;
+    $word = $this->getMaxWordInQueue();
 
-      array_shift($queue); // Remove the top of the queue
-      $document = $documents[$i];
-      $queue[] = $this->parseText($document->textVersion);
-    }
+    array_shift($this->queue); // Remove the top of the queue
+    $document = array_shift($this->documents);
+    $this->queue[] = $this->parseText($document->textVersion);
 
-    return $maxWords;
+    return $word;
+  }
+
+  private function getDocuments(int $lastId = null)
+  {
+    $url = self::API_LOCATION . ($lastId ? "?lastID=$lastId" : '');
+    return json_decode( file_get_contents($url) );
   }
 
   /**
@@ -52,13 +55,13 @@ class Analyzer
   /**
    * Get the word with the most combined count in queue
    */
-  private function getMaxWordInQueue(array $queue) : string
+  private function getMaxWordInQueue() : string
   {
     $max     = 0;
     $maxWord = null;
     $total   = [];
 
-    foreach($queue as $wordCount) {
+    foreach($this->queue as $wordCount) {
       foreach ($wordCount as $word => $count) {
 
         if (!isset($total[$word])) $total[$word] = 0;
@@ -73,6 +76,18 @@ class Analyzer
     }
 
     return $maxWord;
+  }
+
+  private function saveSession()
+  {
+    $_SESSION['queue']     = $this->queue;
+    $_SESSION['documents'] = $this->documents;
+  }
+
+  private function getSession()
+  {
+    $this->queue     = $_SESSION['queue'];
+    $this->documents = $_SESSION['documents'];
   }
 }
 

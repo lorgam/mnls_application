@@ -4,10 +4,10 @@ document.addEventListener('DOMContentLoaded', function(evt) {
 
   form.addEventListener('submit', function(evt) {
     evt.preventDefault();
-    sendRequest();
+    sendRequest('start');
   });
 
-  function sendRequest() {
+  function sendRequest(method) {
     var request = new XMLHttpRequest();
     request.onreadystatechange = function() {
       if (request.readyState == 4) {
@@ -15,8 +15,12 @@ document.addEventListener('DOMContentLoaded', function(evt) {
         else console.error(request);
       }
     }
-    request.open('POST', 'http://localhost/');
-    request.send(new FormData(form));
+
+    var data = new FormData(form);
+    data.append('method', method);
+
+    request.open('POST', 'https://localhost/');
+    request.send(data);
   }
 
   function parseResponse(response) {
@@ -32,13 +36,11 @@ document.addEventListener('DOMContentLoaded', function(evt) {
           n         = data.n;
           m         = data.m;
 
-          for (var i = 0; i < data.items.length; ++i) {
-            var div = document.createElement('div');
-            div.className = 'row';
-            div.innerHTML = 'For the ' + n + ' documents analyzed in position ' + (++documents) + ', the most common word is: ' + data.items[i];
+          var div = document.createElement('div');
+          div.className = 'row';
+          div.innerHTML = 'For the ' + n + ' documents analyzed in position ' + (++documents) + ', the most common word is: ' + data.word;
 
-            visor.appendChild(div);
-          }
+          visor.appendChild(div);
 
           break;
         default: alert("method not controlled by the front: " + data.method);
