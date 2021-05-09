@@ -14,14 +14,15 @@
     <form id="config-form" action="#">
       <div class="nm-container">
         <label for="n">Value for n</label>
-        <input type="text" id="n">
+        <input type="text" name="n">
         <label for="m">Value for m</label>
-        <input type="text" id="m">
+        <input type="text" name="m">
+        <input type="hidden" name="action" value="getWordCount">
+        <input type="submit" value="Submit form">
       </div>
     </form>
 
     <div class="visor">
-      <pre><?php var_dump($res); ?></pre>
     </div>
 
   </div>
