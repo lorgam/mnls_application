@@ -2,8 +2,7 @@
 
 class Analyzer
 {
-  private const API_LOCATION = 'http://api/';
-
+  public static $API_LOCATION;
   private $documents;
   private $queue;
   private $lastId;
@@ -21,13 +20,14 @@ class Analyzer
 
     for ($i = 0; $i < $n; ++$i) { // Read the first items to fill the queue that we are going to use to calculate the most used word in the documents
       $document = array_shift($this->documents);
+      $this->lastId = $document->id;
       $this->queue[] = $this->parseText($document->textVersion);
+
     }
 
-    $this->lastId = $document->id;
     $this->saveSession();
 
-    return $this->getMaxWordInQueue();
+    return $this->getMaxWordInQueue($this->queue);
   }
 
   public function next() : string
@@ -38,12 +38,12 @@ class Analyzer
 
     array_shift($this->queue); // Remove the top of the queue
     $document = array_shift($this->documents);
+    $this->lastId = $document->id;
     $this->queue[] = $this->parseText($document->textVersion);
 
-    $this->lastId = $document->id;
     $this->saveSession();
 
-    return $this->getMaxWordInQueue();
+    return $this->getMaxWordInQueue($this->queue);
   }
 
   public function stop() : void
@@ -53,8 +53,9 @@ class Analyzer
 
   private function getDocuments(int $lastId = null)
   {
-    $url = self::API_LOCATION . ($lastId ? "?lastID=$lastId" : '');
-    return json_decode( file_get_contents($url) );
+    $url = self::$API_LOCATION . ($lastId ? "?lastID=$lastId" : '');
+    $contents =  json_decode( file_get_contents($url) );
+    return $contents;
   }
 
   /**
@@ -66,8 +67,8 @@ class Analyzer
 
     $words = explode(' ', $text);
     foreach ($words as $word) {
-      if (!isset($wordCount[$word])) $wordCount[$word] = 0;
-      $wordCount[$word]++;
+      if (!isset($wordCount[$word])) $wordCount[$word] = 1;
+      else $wordCount[$word]++;
     }
 
     return $wordCount;
@@ -76,21 +77,25 @@ class Analyzer
   /**
    * Get the word with the most combined count in queue
    */
-  private function getMaxWordInQueue() : string
+  private function getMaxWordInQueue(array $queue) : string
   {
     $max     = 0;
-    $maxWord = null;
+    $maxWord = '';
     $total   = [];
+    $value   = 0;
 
-    foreach($this->queue as $wordCount) {
+    foreach($queue as $wordCount) {
       foreach ($wordCount as $word => $count) {
 
-        if (!isset($total[$word])) $total[$word] = 0;
-        $total[$word] += $count;
+        if (isset($total[$word])) $value = $total[$word];
+        else $value = 0;
 
-        if ($total[$word] > $max) {
+        $value += $count;
+        $total[$word] = $value;
+
+        if ($value > $max) {
           $maxWord = $word;
-          $max = $total[$word];
+          $max = $value;
         }
 
       }

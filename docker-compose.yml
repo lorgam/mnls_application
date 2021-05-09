@@ -8,10 +8,10 @@ services:
     ports:
       - 8888:80
   app:
-    build:
-      context: ./
-      dockerfile: DockerfileApp
+    image: php:7-apache
+    environment:
+      - API_LOCATION=http://api/
     volumes:
       - ./src:/var/www/html:ro
     ports:
-      - 443:443
+      - 80:80

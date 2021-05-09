@@ -1,5 +1,5 @@
 var form, visor, startBtn, stopBtn, pauseBtn, nextBtn, resumeBtn, documents, n, m, elements;
-var started = false, paused = false;
+var started = false, paused = false, stopped = false;
 
 document.addEventListener('DOMContentLoaded', function(evt) {
   form      = document.getElementById('config-form');
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function(evt) {
 
   stopBtn.addEventListener('click', function(evt) {
     disable_btns();
-    send_request('stop');
+    stopped = true;
   });
 
   pauseBtn.addEventListener('click', function(evt) {
@@ -57,7 +57,10 @@ function send_request(method) {
     if (request.readyState == 4) {
       if (request.status == 200) {
         parse_response(request.responseText);
-        if (started && !paused) send_request('next');
+
+        if (stopped) send_request('stop');
+        else if (started && !paused) send_request('next');
+
       } else handle_error(request.responseText);
     }
   }
@@ -65,7 +68,7 @@ function send_request(method) {
   var data = new FormData(form);
   data.append('method', method);
 
-  request.open('POST', 'https://localhost/');
+  request.open('POST', '#');
   request.send(data);
 }
 
@@ -92,6 +95,7 @@ function process_start(data) {
 
   started = true;
   paused = false;
+  stopped = false;
 
   startBtn.disabled = true;
   stopBtn.disabled = false;
@@ -101,10 +105,9 @@ function process_start(data) {
 }
 
 function process_stop(data) {
-  console.log('stop', data);
-
   started = false;
   paused = false;
+  stopped = false;
 
   startBtn.disabled  = false;
   stopBtn.disabled   = true;
@@ -118,6 +121,8 @@ function process_next(data) {
 }
 
 function add_info(word) {
+  if (word == '') return;
+
   elements.push(word);
   if (elements.length > m) elements.shift();
 

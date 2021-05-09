@@ -3,24 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <title>MNLS Application</title>
-  <link rel="stylesheet" href="https://localhost/assets/css/styles.css">
-  <script type="text/javascript" src="https://localhost/assets/js/scripts.js"></script>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <script type="text/javascript" src="assets/js/scripts.js"></script>
 </head>
 
 <body>
   <div class="content">
     <h1>MNLS Application</h1>
 
+    <div class="info">The server is making the petition to <?= $API_LOCATION ?></div>
+
     <form id="config-form" action="#">
       <input type="hidden" name="action" value="getWordCount">
 
       <div class="nm-container">
         <div>
-          <label for="n">Value for n</label>
+          <label for="n">Amount of documents to analyze</label>
           <input type="text" name="n" value="3">
         </div>
         <div>
-          <label for="m">Value for m</label>
+          <label for="m">Number of reports on screen</label>
           <input type="text" name="m" value="5">
         </div>
       </div>
