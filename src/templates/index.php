@@ -26,10 +26,11 @@
       </div>
 
       <div class="controls">
-        <input type="submit" value="Start">
-        <input class="control" type="button" value="Stop">
-        <input class="control" type="button" value="Pause">
-        <input class="control" type="button" value="Next">
+        <input class="control" type="button" value="Start" id="start">
+        <input class="control" type="button" value="Stop" id="stop" disabled>
+        <input class="control" type="button" value="Pause" id="pause" disabled>
+        <input class="control" type="button" value="Next" id="next" disabled>
+        <input class="control" type="button" value="Resume" id="resume" disabled>
       </div>
     </form>
 

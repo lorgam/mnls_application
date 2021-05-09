@@ -15,7 +15,7 @@ class Controller
     else return $this->errorMsg('method parameter value not valid');
   }
 
-  private function process_start()
+  private function process_start() : array
   {
     $res = ['success' => true, 'method' => 'start'];
     if (!isset($_POST['n']) || !is_numeric($_POST['n'])) return $this->errorMsg('Incorrect value for n');
@@ -26,9 +26,10 @@ class Controller
     if ($m <= 0) return $this->errorMsg('The values for m must be greater than 0');
 
     $res['n'] = $n;
+    $res['m'] = $m;
 
     $analyzer = new Analyzer();
-    $word = $analyzer->getFrequency([
+    $word = $analyzer->start([
       'n' => $n,
       'm' => $m,
     ]);
@@ -37,19 +38,28 @@ class Controller
     return $res;
   }
 
-  private function process_stop()
+  private function process_stop() : array
   {
     $res = ['success' => true, 'method' => 'stop'];
+
+    $analyzer = new Analyzer();
+    $analyzer->stop();
+
     return $res;
   }
 
-  private function process_next()
+  private function process_next() : array
   {
     $res = ['success' => true, 'method' => 'next'];
+
+    $analyzer = new Analyzer();
+    $word = $analyzer->next();
+
+    $res['word'] = $word;
     return $res;
   }
 
-  private function errorMsg(string $error)
+  private function errorMsg(string $error) : array
   {
     return [
       'success' => false,

@@ -6,12 +6,15 @@ class Analyzer
 
   private $documents;
   private $queue;
+  private $lastId;
 
   /**
    * Gets the most used words in a combination of documents
    */
-  public function getFrequency(array $params) : string
+  public function start(array $params) : string
   {
+    $this->cleanSession();
+
     $n               = $params['n'];
     $this->documents = $this->getDocuments();
     $this->queue     = [];
@@ -21,13 +24,31 @@ class Analyzer
       $this->queue[] = $this->parseText($document->textVersion);
     }
 
-    $word = $this->getMaxWordInQueue();
+    $this->lastId = $document->id;
+    $this->saveSession();
+
+    return $this->getMaxWordInQueue();
+  }
+
+  public function next() : string
+  {
+    $this->getSession();
+
+    if (count($this->documents) == 0) $this->documents = $this->getDocuments();
 
     array_shift($this->queue); // Remove the top of the queue
     $document = array_shift($this->documents);
     $this->queue[] = $this->parseText($document->textVersion);
 
-    return $word;
+    $this->lastId = $document->id;
+    $this->saveSession();
+
+    return $this->getMaxWordInQueue();
+  }
+
+  public function stop() : void
+  {
+    $this->cleanSession();
   }
 
   private function getDocuments(int $lastId = null)
@@ -78,16 +99,25 @@ class Analyzer
     return $maxWord;
   }
 
-  private function saveSession()
+  private function saveSession() : void
   {
     $_SESSION['queue']     = $this->queue;
     $_SESSION['documents'] = $this->documents;
+    $_SESSION['lastId']    = $this->lastId;
   }
 
-  private function getSession()
+  private function getSession() : void
   {
     $this->queue     = $_SESSION['queue'];
     $this->documents = $_SESSION['documents'];
+    $this->lastId    = $_SESSION['lastId'];
+  }
+
+  private function cleanSession() : void
+  {
+    unset($_SESSION['queue']);
+    unset($_SESSION['documents']);
+    unset($_SESSION['lastId']);
   }
 }
 
