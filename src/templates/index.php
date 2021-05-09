@@ -23,6 +23,13 @@
       </div>
     </form>
 
+    <div class="controls">
+      <input class="control" type="button" value="Start">
+      <input class="control" type="button" value="Stop">
+      <input class="control" type="button" value="Pause">
+      <input class="control" type="button" value="Next">
+    </div>
+
     <div id="visor">
     </div>
 

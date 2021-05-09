@@ -33,7 +33,7 @@ class Controller
       default :
         if (!isset($_POST['method'])) return $this->errorMsg('method parameter value not valid');
     }
-    // If ecerything has gone right
+    // If everything has gone right
     return $res;
   }
 
