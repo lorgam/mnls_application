@@ -9,32 +9,43 @@ class Controller
     if (!isset($_POST['method'])) return $this->errorMsg('Missing method parameter');
 
     $method = trim($_POST['method']);
-    $res = ['success' => true, 'method' => $method];
+    $func = "process_$method";
 
-    switch ($method) {
-      case 'start':
-        if (!isset($_POST['n']) || !is_numeric($_POST['n'])) return $this->errorMsg('Incorrect value for n');
-        if (!isset($_POST['m']) || !is_numeric($_POST['m'])) return $this->errorMsg('Incorrect value for m');
-        $n = intval($_POST['n']);
-        $m = intval($_POST['m']);
-        if ($n <= 0) return $this->errorMsg('The values for n must be greater than 0');
-        if ($m <= 0) return $this->errorMsg('The values for m must be greater than 0');
+    if (method_exists($this, $func)) return call_user_func([$this, $func]);
+    else return $this->errorMsg('method parameter value not valid');
+  }
 
-        $res['n'] = $n;
+  private function process_start()
+  {
+    $res = ['success' => true, 'method' => 'start'];
+    if (!isset($_POST['n']) || !is_numeric($_POST['n'])) return $this->errorMsg('Incorrect value for n');
+    if (!isset($_POST['m']) || !is_numeric($_POST['m'])) return $this->errorMsg('Incorrect value for m');
+    $n = intval($_POST['n']);
+    $m = intval($_POST['m']);
+    if ($n <= 0) return $this->errorMsg('The values for n must be greater than 0');
+    if ($m <= 0) return $this->errorMsg('The values for m must be greater than 0');
 
-        $analyzer = new Analyzer();
-        $word = $analyzer->getFrequency([
-          'n' => $n,
-          'm' => $m,
-        ]);
+    $res['n'] = $n;
 
-        $res['word'] = $word;
-        break;
+    $analyzer = new Analyzer();
+    $word = $analyzer->getFrequency([
+      'n' => $n,
+      'm' => $m,
+    ]);
 
-      default :
-        if (!isset($_POST['method'])) return $this->errorMsg('method parameter value not valid');
-    }
-    // If everything has gone right
+    $res['word'] = $word;
+    return $res;
+  }
+
+  private function process_stop()
+  {
+    $res = ['success' => true, 'method' => 'stop'];
+    return $res;
+  }
+
+  private function process_next()
+  {
+    $res = ['success' => true, 'method' => 'next'];
     return $res;
   }
 
