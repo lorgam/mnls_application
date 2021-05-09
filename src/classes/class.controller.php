@@ -19,10 +19,13 @@ class Controller
     $res = ['success' => true, 'method' => 'start'];
     if (!isset($_POST['n']) || !is_numeric($_POST['n'])) return $this->errorMsg('Incorrect value for n');
     if (!isset($_POST['m']) || !is_numeric($_POST['m'])) return $this->errorMsg('Incorrect value for m');
+    if (!isset($_POST['minimum_length']) || !is_numeric($_POST['minimum_length'])) return $this->errorMsg('Incorrect value for minimum_length');
     $n = intval($_POST['n']);
     $m = intval($_POST['m']);
-    if ($n <= 0) return $this->errorMsg('The values for n must be greater than 0');
-    if ($m <= 0) return $this->errorMsg('The values for m must be greater than 0');
+    $minimum_length = intval($_POST['minimum_length']);
+    if ($n <= 0) return $this->errorMsg('The value for n must be greater than 0');
+    if ($m <= 0) return $this->errorMsg('The value for m must be greater than 0');
+    if ($minimum_length <= 0) return $this->errorMsg('The value for minimum_length must be greater than 0');
 
     $res['n'] = $n;
     $res['m'] = $m;
@@ -31,6 +34,7 @@ class Controller
     $word = $analyzer->start([
       'n' => $n,
       'm' => $m,
+      'minimum_length' => $minimum_length,
     ]);
 
     $res['word'] = $word;

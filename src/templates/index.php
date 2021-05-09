@@ -25,6 +25,10 @@
           <label for="m">Number of reports on screen</label>
           <input type="text" name="m" value="5">
         </div>
+        <div>
+          <label for="minimum_length">Minimum length of words</label>
+          <input type="text" name="minimum_length" value="4">
+        </div>
       </div>
 
       <div class="controls">

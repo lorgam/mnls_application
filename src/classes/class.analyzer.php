@@ -3,9 +3,11 @@
 class Analyzer
 {
   public static $API_LOCATION;
+
   private $documents;
   private $queue;
   private $lastId;
+  private $minimumLength;
 
   /**
    * Gets the most used words in a combination of documents
@@ -14,9 +16,10 @@ class Analyzer
   {
     $this->cleanSession();
 
-    $n               = $params['n'];
-    $this->documents = $this->getDocuments();
-    $this->queue     = [];
+    $n                   = $params['n'];
+    $this->minimumLength = $params['minimum_length'];
+    $this->documents     = $this->getDocuments();
+    $this->queue         = [];
 
     for ($i = 0; $i < $n; ++$i) { // Read the first items to fill the queue that we are going to use to calculate the most used word in the documents
       $document = array_shift($this->documents);
@@ -67,6 +70,8 @@ class Analyzer
 
     $words = explode(' ', $text);
     foreach ($words as $word) {
+      if (mb_strlen($word) < $this->minimumLength) continue;
+
       if (!isset($wordCount[$word])) $wordCount[$word] = 1;
       else $wordCount[$word]++;
     }
@@ -97,7 +102,6 @@ class Analyzer
           $maxWord = $word;
           $max = $value;
         }
-
       }
     }
 
@@ -106,16 +110,18 @@ class Analyzer
 
   private function saveSession() : void
   {
-    $_SESSION['queue']     = $this->queue;
-    $_SESSION['documents'] = $this->documents;
-    $_SESSION['lastId']    = $this->lastId;
+    $_SESSION['queue']         = $this->queue;
+    $_SESSION['documents']     = $this->documents;
+    $_SESSION['lastId']        = $this->lastId;
+    $_SESSION['minimumLength'] = $this->minimumLength;
   }
 
   private function getSession() : void
   {
-    $this->queue     = $_SESSION['queue'];
-    $this->documents = $_SESSION['documents'];
-    $this->lastId    = $_SESSION['lastId'];
+    $this->queue         = $_SESSION['queue'];
+    $this->documents     = $_SESSION['documents'];
+    $this->lastId        = $_SESSION['lastId'];
+    $this->minimumLength = $_SESSION['minimumLength'];
   }
 
   private function cleanSession() : void
@@ -123,6 +129,7 @@ class Analyzer
     unset($_SESSION['queue']);
     unset($_SESSION['documents']);
     unset($_SESSION['lastId']);
+    unset($_SESSION['minimumLength']);
   }
 }
 
