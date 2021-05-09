@@ -10,7 +10,7 @@ services:
   app:
     image: php:7-apache
     environment:
-      - API_LOCATION=http://api/
+      - API_LOCATION=http://api/dictAPI.php/
     volumes:
       - ./src:/var/www/html:ro
     ports:
