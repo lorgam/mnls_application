@@ -7,4 +7,6 @@ $res = $analyzer->getFrequency([
   'n' => 3,
   'm' => 5
 ]);
-?><pre><?php var_dump($res); ?></pre>
+
+require_once 'templates/index.php';
+

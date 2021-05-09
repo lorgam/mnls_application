@@ -1,0 +1,9 @@
+.content {
+  max-width: 1000px;
+  margin: auto;
+  text-align: center;
+}
+
+#n, #m {
+  width: 40px;
+}
