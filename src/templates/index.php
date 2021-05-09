@@ -19,15 +19,15 @@
       <div class="nm-container">
         <div>
           <label for="n">Amount of documents to analyze</label>
-          <input type="text" name="n" value="3">
+          <input class="number" type="text" name="n" value="3">
         </div>
         <div>
           <label for="m">Number of reports on screen</label>
-          <input type="text" name="m" value="5">
+          <input class="number" type="text" name="m" value="5">
         </div>
         <div>
           <label for="minimum_length">Minimum length of words</label>
-          <input type="text" name="minimum_length" value="4">
+          <input class="number" type="text" name="minimum_length" value="4">
         </div>
       </div>
 

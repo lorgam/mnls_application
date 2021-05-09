@@ -4,6 +4,18 @@
   text-align: center;
 }
 
-#n, #m {
+.number {
   width: 40px;
 }
+
+#visor {max-width: 600px;}
+.nm-container {max-width: 350px;}
+
+#visor, .nm-container {
+  text-align: left;
+  margin: 1rem auto;
+  line-height: 1.5rem;
+}
+
+
+.nm-container div {margin: 0.4rem 0;}
