@@ -137,7 +137,7 @@ function show_data() {
     var div = document.createElement('div');
 
     div.className = 'row row-' + i;
-    div.innerHTML = 'For the ' + n + ' documents analyzed in position ' + (documents + i + 1) + ', the most common word is: ' + elements[i];
+    div.innerHTML = 'Analysis ' + (documents + i) + ' of ' + n + ' documents. Most common word: ' + elements[i];
 
     visor.appendChild(div);
   }
