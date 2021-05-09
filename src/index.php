@@ -1,12 +1,13 @@
 <?php
 session_start();
 
-require_once 'classes/class.analyzer.php';
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+  require_once 'classes/class.controller.php';
 
-if (isset($_POST['action']) && $_POST['action'] == 'getWordCount') {
-  $res = [];
-  echo json_encode($res);
+  $controller = new Controller();
+  echo json_encode($controller->processPostPetition());
 } else {
   include_once 'templates/index.php';
 }
+
 
